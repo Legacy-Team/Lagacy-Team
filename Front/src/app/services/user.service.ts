@@ -125,4 +125,8 @@ export class UserService {
       headers: headers,
     });
   }
+
+  updateUser(form: any) {
+    return this.http.post(this.rootUrl + '/user/update', form);
+  }
 }

@@ -58,7 +58,12 @@
                   </div>
                 </div>
 
-                <div class="product-feed-tab current" id="feed-dd">
+                <div
+                  *ngFor="let post of posts; let i = index"
+                  [attr.data-index]="i"
+                  class="product-feed-tab current"
+                  id="feed-dd"
+                >
                   <div class="posts-section">
                     <div class="post-bar">
                       <div class="post_topbar">
@@ -68,12 +73,12 @@
                             alt=""
                           />
                           <div class="usy-name">
-                            <h3>John Doe</h3>
+                            <h3>{{ user.username }}</h3>
                             <span
                               ><img
                                 src="../../assets/images/clock.png"
                                 alt=""
-                              />3 min ago</span
+                              />{{ post.createdAt | date }}</span
                             >
                           </div>
                         </div>
@@ -82,61 +87,12 @@
                             ><i class="la la-ellipsis-v"></i
                           ></a>
                           <ul class="ed-options">
-                            <li><a href="#" title="">Edit Post</a></li>
-                            <li><a href="#" title="">Unsaved</a></li>
-                            <li><a href="#" title="">Unbid</a></li>
-                            <li><a href="#" title="">Close</a></li>
-                            <li><a href="#" title="">Hide</a></li>
+                            <li><a href="#" title="">Delete Post</a></li>
                           </ul>
                         </div>
                       </div>
-                      <div class="epi-sec">
-                        <ul class="descp">
-                          <li>
-                            <img
-                              src="../../assets/images/icon8.png"
-                              alt=""
-                            /><span>Epic Coder</span>
-                          </li>
-                          <li>
-                            <img
-                              src="../../assets/images/icon9.png"
-                              alt=""
-                            /><span>India</span>
-                          </li>
-                        </ul>
-                        <ul class="bk-links">
-                          <li>
-                            <a href="#" title=""
-                              ><i class="la la-bookmark"></i
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#" title=""
-                              ><i class="la la-envelope"></i
-                            ></a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="job_descp">
-                        <h3>Senior Wordpress Developer</h3>
-                        <ul class="job-dt">
-                          <li><a href="#" title="">Full Time</a></li>
-                          <li><span>$30 / hr</span></li>
-                        </ul>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Aliquam luctus hendrerit metus, ut ullamcorper
-                          quam finibus at. Etiam id magna sit amet...
-                          <a href="#" title="">view more</a>
-                        </p>
-                        <ul class="skill-tags">
-                          <li><a href="#" title="">HTML</a></li>
-                          <li><a href="#" title="">PHP</a></li>
-                          <li><a href="#" title="">CSS</a></li>
-                          <li><a href="#" title="">Javascript</a></li>
-                          <li><a href="#" title="">Wordpress</a></li>
-                        </ul>
+                      <div style="margin-left: 10%" class="job_descp">
+                        <h3>{{ post.message }}</h3>
                       </div>
                       <div class="job-status-bar">
                         <ul class="like-com">
@@ -146,15 +102,85 @@
                               src="../../assets/images/liked-img.png"
                               alt=""
                             />
-                            <span>25</span>
+                            <span>{{ post.likers.length }}</span>
                           </li>
                           <li>
-                            <a href="#" class="com"
-                              ><i class="fas fa-comment-alt"></i> Comment 15</a
+                            <a
+                              (click)="openCommentText(i)"
+                              data-toggle="modal"
+                              data-target="#exampleModal"
+                              href="#"
+                              class="com"
+                              ><i class="fas fa-comment-alt"></i>
+                              {{ post.comments.length }}</a
                             >
                           </li>
                         </ul>
-                        <a href="#"><i class="fas fa-eye"></i>Views 50</a>
+                        <div *ngIf="isOpen[i]" class="comment-section">
+                          <div class="comment-sec">
+                            <ul>
+                              <li>
+                                <div
+                                  class="comment-list"
+                                  *ngFor="let comment of post.comments"
+                                >
+                                  <div class="comment">
+                                    <h3>{{ comment.commenterUsername }}</h3>
+                                    <span
+                                      ><img
+                                        src="../../assets/images/clock.png"
+                                        alt=""
+                                      />
+                                      {{ comment.timestamp | date }}</span
+                                    >
+                                    <p>
+                                      {{ comment.text }}
+                                    </p>
+                                    <button
+                                      *ngIf="user._id === comment.commenterId"
+                                      (click)="
+                                        deleteComment(post._id, comment._id)
+                                      "
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="post-comment">
+                            <div class="cm_img">
+                              <img
+                                src="../../assets/images/resources/bg-img4.png"
+                                alt=""
+                              />
+                            </div>
+                            <div class="comment_box">
+                              <form
+                                #commentForm="ngForm"
+                                (ngSubmit)="
+                                  OnSubmitcomment(commentForm, post._id)
+                                "
+                              >
+                                <input
+                                  #message="ngModel"
+                                  [(ngModel)]="comment.text"
+                                  style="width: 332px"
+                                  type="text"
+                                  name="text"
+                                  placeholder="Post a comment"
+                                />
+                                <button
+                                  type="submit"
+                                  [disabled]="!commentForm.valid"
+                                >
+                                  Send
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -164,7 +190,7 @@
             <div class="col-lg-3">
               <div class="right-sidebar">
                 <div class="message-btn">
-                  <a href="profile-account-setting.html" title=""
+                  <a routerLink="/update-profile" title=""
                     ><i class="fas fa-cog"></i> Update Profile</a
                   >
                 </div>

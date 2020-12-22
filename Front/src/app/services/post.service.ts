@@ -38,13 +38,14 @@ export class PostService {
       headers: headers,
     });
   }
-  editPost(post: any, obj: any) {
+  likePost(postId: any, id: any) {
+    console.log('anything');
     var requestHeader = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.patch(
-      this.rootUrl + `/like-post/${post._id}`,
-      obj,
+    return this.http.post(
+      this.rootUrl + `/post/like-post/${postId}`,
+      { id },
       requestHeader
     );
   }

@@ -154,15 +154,13 @@ export class HomeComponent implements OnInit {
       comments: [{}],
     };
   }
-  clicklike(post: Post) {
-    let obj = { id: this.user._id };
-    console.log(obj);
-    this.postService.editPost(post, obj);
-    this.postService.getAllPosts().subscribe((data) => {
-      this.posts = data;
-      this.isOpen = Array(this.posts.length).fill(false);
-      // console.log('hello i m home', this.posts);
-    });
+  clicklike(postId: any) {
+    this.postService.likePost(postId, this.user._id);
+    // this.postService.getAllPosts().subscribe((data) => {
+    //   this.posts = data;
+    //   this.isOpen = Array(this.posts.length).fill(false);
+    //   // console.log('hello i m home', this.posts);
+    // });
   }
 
   onPictureSelected(event: any) {
