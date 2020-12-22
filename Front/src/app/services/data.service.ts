@@ -19,4 +19,6 @@ export class DataService {
   changefriends(friends: any) {
     this.friendsSource.next(friends);
   }
+
+  
 }

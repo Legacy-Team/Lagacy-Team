@@ -2,7 +2,9 @@ const router = require("express").Router();
 const authController = require("../controllers/auth.controller");
 const userController = require("../controllers/user.controller.js");
 const uploadController = require("../controllers/upload.controller");
+
 const multer = require("multer");
+const roomModel = require("../models/room.model");
 const upload = multer();
 // Authentification
 router.post("/register", authController.signUp);
@@ -15,7 +17,9 @@ router.get("/", userController.getAllUsers);
 router.get("/:id", userController.userInfo);
 router.put("/:id", userController.updateUser);
 router.delete("/:id", userController.deleteUser);
-router.patch("/kicker/:id", userController.kicker);
+router.post("/room", userController.getroom);
+router.post("/accept/:id/:id2", userController.accept);
+router.post("/invite/:id/:id2", userController.invite);
 router.patch("/desinvitations/:id", userController.desinvitations);
 
 // upload

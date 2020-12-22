@@ -14,24 +14,26 @@
                       <div class="usr-pic">
                         <img
                           style="height: 112px"
-                          src="{{ user.picture }}"
+                          [src]="linkImg(user.picture)"
                           alt=""
                         />
                       </div>
                     </div>
                     <div class="user-specs">
-                      <h3>{{ user.username }}</h3>
+                      <h3>
+                        <a routerLink="/profile">{{ user.username }}</a>
+                      </h3>
                       <span>{{ user.bio }}</span>
                     </div>
                   </div>
                   <ul class="user-fw-status">
                     <li>
                       <h4>Friends</h4>
-                      <span>{{ user.invitations.length }}</span>
+                      <span>{{ user.friends.length }}</span>
                     </li>
                     <li>
                       <h4>Invitations</h4>
-                      <span>{{ user.friends.length }}</span>
+                      <span>{{ user.invitations.length }}</span>
                     </li>
                     <li>
                       <a routerLink="/profile" title="">View Profile</a>
@@ -57,7 +59,12 @@
                           <h4>{{ friend.username }}</h4>
                           <span>{{ friend.bio }}</span>
                         </div>
-                        <span><i class="la la-plus"></i></span>
+                        <span
+                          ><i
+                            class="la la-plus"
+                            (click)="invite(friend._id)"
+                          ></i
+                        ></span>
                       </div>
                     </div>
                     <div class="view-more">
@@ -102,7 +109,13 @@
                         />
                         <div class="usy-name">
                           <h1 *ngIf="post.comments.length > 0"></h1>
-                          <h3>{{ post.posterId.username }}</h3>
+
+                          <h3 *ngIf="post.posterId._id === user._id">
+                            <a routerLink="/profile">{{ user.username }}</a>
+                          </h3>
+                          <h3 *ngIf="post.posterId._id !== user._id">
+                            {{ post.posterId.username }}
+                          </h3>
                           <span
                             ><img src="../../assets/images/clock.png" alt="" />3
                             min ago</span
@@ -120,6 +133,20 @@
                           <li><a href="" title="">Edit Post</a></li>
                           <li><a href="" title="">Delete</a></li>
                         </ul>
+                      </div>
+                      <div
+                        *ngIf="
+                          post.posterId._id !== user._id &&
+                          !isFriend(post.posterId._id)
+                        "
+                        class="ed-opts"
+                      >
+                        <button class="ed-opts-open">
+                          <i
+                            class="la la-plus"
+                            (click)="invite(post.posterId._id)"
+                          ></i>
+                        </button>
                       </div>
                     </div>
 
@@ -161,12 +188,23 @@
                                 <div class="comment">
                                   <h3>{{ comment.commenterUsername }}</h3>
                                   <span
-                                    ><img src="images/clock.png" alt="" />
+                                    ><img
+                                      src="../../assets/images/clock.png"
+                                      alt=""
+                                    />
                                     {{ comment.timestamp | date }}</span
                                   >
                                   <p>
                                     {{ comment.text }}
                                   </p>
+                                  <button
+                                    *ngIf="user._id === comment.commenterId"
+                                    (click)="
+                                      deleteComment(post._id, comment._id)
+                                    "
+                                  >
+                                    Delete
+                                  </button>
                                 </div>
                               </div>
                             </li>

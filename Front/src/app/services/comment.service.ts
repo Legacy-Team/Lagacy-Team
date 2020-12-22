@@ -34,4 +34,10 @@ export class CommentService {
       }
     );
   }
+  deleteComment(postId: String, commentId: String) {
+    return this.http.delete(
+      `${this.rootUrl}/post/delete-comment-post/${postId}/${commentId}`
+    );
+  }
+  //delete a comment
 }

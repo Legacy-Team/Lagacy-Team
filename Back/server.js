@@ -8,6 +8,7 @@ const postRoutes = require("./routes/post.routes");
 const cors = require("cors");
 app.use(cors());
 const MessageModel = require("./models/message.model");
+const RoomModel = require("./models/room.model");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { checkUser, requireAuth } = require("./middleware/auth.middleware");
@@ -52,18 +53,37 @@ io.on("connection", (socket) => {
   // When we receive a 'message' event from our client, print out
   // the contents of that message and then echo it back to our client
   // using `io.emit()`
-  socket.on("message", (message) => {
-    console.log("Message Received: ", message);
+  socket.on("message", (msgData) => {
+    console.log(msgData);
     // get the message, the sender, the reciever and store it to DB
     let newMessage = new MessageModel({
-      sender_id: message.senderId,
-      receiver_id: message.receiverId,
-      message: message.message
+      sender_id: msgData.senderId,
+      receiver_id: msgData.receiverId,
+      message: msgData.message
     });
-    console.log("db", newMessage);
-    newMessage.save();
-    // emit something back to the client
-    io.emit("message", { type: "new-message", text: message });
+
+    newMessage.save().then(async (createdMessage) => {
+      console.log(createdMessage);
+      await RoomModel.findByIdAndUpdate(
+        msgData.roomId,
+        { $addToSet: { messages: createdMessage } },
+        { upsert: true },
+        (err, data) => {
+          // emit something back to the client
+          RoomModel.findById(data._id)
+            .populate("messages")
+            .populate("user_id1")
+            .populate("user_id2")
+            .exec((err, room) => {
+              if (!err) {
+                io.emit("message", { type: "new-message", text: room });
+              }
+            });
+          // if (!err) res.status(201).json(data);
+          // else return res.status(400).json(err);
+        }
+      );
+    });
   });
 });
 

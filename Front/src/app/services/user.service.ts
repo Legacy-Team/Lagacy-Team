@@ -67,7 +67,32 @@ export class UserService {
     });
     return this.http.get(this.rootUrl + '/profile', { headers: headers });
   }
+  getroom(id: any) {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post(
+      this.rootUrl + '/user/room',
+      { id },
+      { headers: headers }
+    );
+  }
+  sendInvitation(userId: String, friendId: String) {
+    console.log(friendId);
 
+    return this.http.post(
+      `${this.rootUrl}/user/invite/${userId}/${friendId}`,
+      {}
+    );
+  }
+  acceptInvitation(userId: String, friendId: String) {
+    console.log(friendId);
+
+    return this.http.post(
+      `${this.rootUrl}/user/accept/${userId}/${friendId}`,
+      {}
+    );
+  }
   storeUserData(token: string, user: any) {
     localStorage.setItem('id_token', token);
     localStorage.setItem('user', JSON.stringify(user));

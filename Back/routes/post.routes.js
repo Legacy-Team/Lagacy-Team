@@ -30,7 +30,10 @@ router.patch("/unlike-post/:id", postController.unlikePost);
 //comments
 router.patch("/comment-post/:id", postController.commentPost);
 router.patch("/edit-comment-post/:id", postController.editCommentPost);
-router.patch("/delete-comment-post/:id", postController.deleteCommentPost);
+router.delete(
+  "/delete-comment-post/:id/:id2",
+  postController.deleteCommentPost
+);
 router.post("/createMessage", postController.createMessage);
 
 module.exports = router;
