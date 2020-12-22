@@ -159,8 +159,18 @@
                     </div>
                     <div class="job-status-bar">
                       <ul class="like-com">
-                        <li (click)="clicklike(post)">
-                          <a href="#"><i class="fas fa-heart"></i> Like</a>
+                        <li>
+                          <button
+                            style="
+                              margin-left: 13px;
+                              background-color: #0000;
+                              border: none;
+                              margin-top: 8px;
+                            "
+                            (click)="clicklike(post._id)"
+                          >
+                            <i class="fas fa-heart"></i> Like
+                          </button>
                           <img src="../../assets/images/liked-img.png" alt="" />
 
                           <span>{{ post.likers.length }}</span>

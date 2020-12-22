@@ -22,6 +22,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingComponent } from './setting/setting.component';
 import { DisplayMessageComponent } from './display-message/display-message.component';
+import { UpdateProfileComponent } from './update-profile/update-profile.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { DisplayMessageComponent } from './display-message/display-message.compo
     ProfileComponent,
     SettingComponent,
     DisplayMessageComponent,
+    UpdateProfileComponent,
   ],
   imports: [
     BrowserModule,
