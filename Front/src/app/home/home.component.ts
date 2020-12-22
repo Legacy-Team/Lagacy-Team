@@ -59,6 +59,22 @@ export class HomeComponent implements OnInit {
       console.log('hello i m home', this.posts);
     });
   }
+  invite(friendId: String) {
+    this.userService
+      .sendInvitation(this.user._id, friendId)
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
+
+  isFriend(friend: any) {
+    let isFriend = false;
+    this.user.friends.map((myFriend: any) => {
+      if (myFriend._id === friend) isFriend = true;
+    });
+    return isFriend;
+  }
+
   suggestions(callback: Function) {
     var usernames = new Array();
     console.log(this.user);

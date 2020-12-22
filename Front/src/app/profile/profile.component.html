@@ -1,4 +1,5 @@
-<div class="wrapper">
+<app-navbar></app-navbar>
+<div *ngIf="user" class="wrapper">
   <section class="cover-sec">
     <img src="../../assets/images/resources/cover-img.jpg" alt="" />
     <div class="add-pic-box">
@@ -12,48 +13,49 @@
       <div class="container">
         <div class="main-section-data">
           <div class="row">
-            <div class="col-lg-3">
-              <div class="main-left-sidebar">
-                <div class="user_profile">
-                  <div class="user-pro-img">
-                    <img
-                      src="../../assets/images/resources/user-pro-img.png"
-                      alt=""
-                    />
-                    <div class="add-dp" id="OpenImgUpload">
-                      <input
-                        [(ngModel)]="picture"
-                        (change)="submitUserProfilePicture($event)"
-                        name="picture"
-                        type="file"
-                        id="file"
-                      />
-                      <label for="file"><i class="fas fa-camera"></i></label>
-                    </div>
-                  </div>
-                  <div class="user_pro_status">
-                    <ul class="flw-status">
-                      <li>
-                        <span>Following</span>
-                        <b>34</b>
-                      </li>
-                      <li>
-                        <span>Followers</span>
-                        <b>155</b>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6">
+            <div class="col-lg-9">
               <div class="main-ws-sec">
                 <div class="user-tab-sec rewivew">
-                  <h3>{{ user.username }}</h3>
-                  <div class="star-descp">
-                    <span>{{ user.bio }}</span>
+                  <div class="product-feed-tab current" id="feed-dd">
+                    <div class="posts-section">
+                      <div class="post-bar">
+                        <div class="post_topbar">
+                          <div class="usy-dt">
+                            <img
+                              style="height: 112px"
+                              [src]="linkImg(user.picture)"
+                              alt=""
+                            />
+                            <div style="margin-top: 20%" class="usy-name">
+                              <h3>{{ user.username }}</h3>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="epi-sec">
+                          <ul class="descp">
+                            <li>
+                              <img
+                                src="../../assets/images/icon8.png"
+                                alt=""
+                              /><span>{{ user.bio }}</span>
+                            </li>
+                            <li>
+                              <img
+                                src="../../assets/images/icon9.png"
+                                alt=""
+                              /><span>Tunisia</span>
+                            </li>
+                            <li>
+                              <img
+                                src="../../assets/images/icon9.png"
+                                alt=""
+                              /><span>10 Friends</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="tab-feed st2 settingjb"></div>
                 </div>
 
                 <div class="product-feed-tab current" id="feed-dd">
@@ -163,7 +165,7 @@
               <div class="right-sidebar">
                 <div class="message-btn">
                   <a href="profile-account-setting.html" title=""
-                    ><i class="fas fa-cog"></i> Setting</a
+                    ><i class="fas fa-cog"></i> Update Profile</a
                   >
                 </div>
               </div>

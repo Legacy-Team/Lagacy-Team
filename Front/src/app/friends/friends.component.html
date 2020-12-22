@@ -55,7 +55,11 @@
                   <h3>{{ friend.username }}</h3>
                   <h4>{{ friend.bio }}</h4>
                   <ul>
-                    <li><a href="#" title="" class="follow">Accept</a></li>
+                    <li>
+                      <a (click)="accept(friend._id)" title="" class="follow"
+                        >Accept</a
+                      >
+                    </li>
                   </ul>
                 </div>
               </div>

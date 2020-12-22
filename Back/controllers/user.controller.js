@@ -1,4 +1,5 @@
 const UserModel = require("../models/user.model");
+const RoomModel = require("../models/room.model");
 // to verify each time if the id's are existing in our database
 const ObjectID = require("mongoose").Types.ObjectId;
 
@@ -35,6 +36,19 @@ module.exports.friendsOfFriends = (req, res) => {
     }
   });
 };
+module.exports.getroom = (req, res) => {
+  console.log("i  m fucking here");
+  // the function is valid will test if the id existe on the data base if not it will exit the function
+  RoomModel.findById(req.body.id)
+    .populate("messages")
+    .populate("user_id1")
+    .populate("user_id2")
+    .exec((err, room) => {
+      if (!err) return res.json(room);
+      if (err) return res.status(500).json(err);
+    });
+};
+
 module.exports.updateUserPicture = (req, res) => {
   console.log("hey");
 };
@@ -76,30 +90,85 @@ module.exports.deleteUser = async (req, res) => {
     return res.status(500).json(err);
   }
 };
-module.exports.kicker = async (req, res) => {
-  if (
-    !ObjectID.isValid(req.params.id) ||
-    !ObjectID.isValid(req.body.idToKicker)
-  )
+module.exports.accept = async (req, res) => {
+  if (!ObjectID.isValid(req.params.id) || !ObjectID.isValid(req.params.id2))
     return res.status(400).json("Id unknown : " + req.params.id);
   try {
     // add to the friends list
     await UserModel.findByIdAndUpdate(
       req.params.id,
-      { $addToSet: { invitations: req.body.idToKicker } },
+      { $addToSet: { friends: req.params.id2 } },
       { new: true, upsert: true },
       (err, data) => {
-        if (!err) res.status(201).json(data);
-        else return res.status(400).json(err);
+        // if (!err) res.status(201).json(data);
+        // else return res.status(400).json(err);
+      }
+    );
+    await UserModel.findByIdAndUpdate(
+      req.params.id2,
+      { $addToSet: { friends: req.params.id } },
+      { new: true, upsert: true },
+      (err, data) => {
+        // if (!err) res.status(201).json(data);
+        // else return res.status(400).json(err);
       }
     );
     // add to invitations list
     await UserModel.findByIdAndUpdate(
-      req.body.idToKicker,
-      { $addToSet: { friends: req.params.id } },
+      req.params.id,
+      {
+        $pull: {
+          invitations: req.params.id2
+        }
+      },
+      { safe: true },
+      (err, data) => {
+        if (!err) res.status(201).json(data);
+        if (err) return res.status(400).json(err);
+      }
+    );
+
+    // add a room for both users
+    let room = new RoomModel();
+    room.user_id1 = req.params.id;
+    room.user_id2 = req.params.id2;
+    room.messages = [];
+    room.save().then(async (createdRoom) => {
+      await UserModel.findByIdAndUpdate(
+        req.params.id2,
+        { $addToSet: { rooms: createdRoom._id } },
+        { new: true, upsert: true },
+        (err, data) => {
+          // if (!err) res.status(201).json(data);
+          // else return res.status(400).json(err);
+        }
+      );
+      await UserModel.findByIdAndUpdate(
+        req.params.id,
+        { $addToSet: { rooms: createdRoom._id } },
+        { new: true, upsert: true },
+        (err, data) => {
+          // if (!err) res.status(201).json(data);
+          // else return res.status(400).json(err);
+        }
+      );
+    });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+module.exports.invite = async (req, res) => {
+  if (!ObjectID.isValid(req.params.id) || !ObjectID.isValid(req.params.id2))
+    return res.status(400).json("Id unknown : " + req.params.id);
+  try {
+    // add to invitations list
+    console.log(req.params.id2);
+    await UserModel.findByIdAndUpdate(
+      req.params.id2,
+      { $addToSet: { invitations: req.params.id } },
       { new: true, upsert: true },
       (err, data) => {
-        // if(!err) res.status(201).json(data);
+        if (!err) res.status(201).json(data);
         if (err) return res.status(400).json(err);
       }
     );
@@ -107,7 +176,6 @@ module.exports.kicker = async (req, res) => {
     return res.status(500).json(err);
   }
 };
-
 module.exports.desinvitations = async (req, res) => {
   if (
     !ObjectID.isValid(req.params.id) ||

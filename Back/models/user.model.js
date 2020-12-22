@@ -53,10 +53,11 @@ const userSchema = new mongoose.Schema(
     },
     picture: {
       type: String,
-      default: "./uploads/profil/random-user.png"
+      default: "upload/placeholder.jpg"
     },
     bio: {
-      type: String
+      type: String,
+      default: "Just another nerd!"
     },
     stars: {
       type: [String]
@@ -75,6 +76,7 @@ userSchema.pre("save", async function (next) {
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email })
     .populate("friends")
+    .populate("rooms")
     .populate("invitations");
   if (user) {
     const auth = await bcrypt.compare(password, user.password);

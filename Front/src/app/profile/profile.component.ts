@@ -19,7 +19,9 @@ export class ProfileComponent implements OnInit {
     private userService: UserService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.user = JSON.parse(localStorage.getItem('user') || '{}');
+  }
 
   submitUserProfilePicture(event: any) {
     console.log(event.target.files[0]);
